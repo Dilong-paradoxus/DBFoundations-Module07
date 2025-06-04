@@ -323,7 +323,18 @@ VIEW
 vProductInventoriesWithPreviousMonthCountsWithKPIs
 AS
 SELECT
-
+	ProductName
+	,InventoryDate
+	,Count
+	,PreviousMonthCount
+	,[CountVsPreviousCountKPI] = case
+		WHEN Count > PreviousMonthCount Then 1
+		WHEN Count < PreviousMonthCount Then -1
+		WHEN Count = PreviousMonthCount then 0
+		END
+FROM
+vProductInventoriesWithPreviousMonthCounts
+go
 -- Important: This new view must use your vProductInventoriesWithPreviousMonthCounts view!
 -- Check that it works: Select * From vProductInventoriesWithPreviousMonthCountsWithKPIs;
 Select * From vProductInventoriesWithPreviousMonthCountsWithKPIs
