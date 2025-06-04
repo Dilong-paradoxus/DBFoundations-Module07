@@ -270,16 +270,15 @@ VIEW
 vCategoryInventories
 AS 
 SELECT TOP 1000000
-	CategoryName,
-	DateName(mm,InventoryDate) + ', ' + DateName(YEAR,InventoryDate) AS Date,
-	SUM(Count) AS InventoryCountByCategory
-FROM vInventories
+	CategoryName
+	,DateName(mm,InventoryDate) + ', ' + DateName(YEAR,InventoryDate) AS DateMonth
+	,[InventoryCount] = SUM(Count) OVER(PARTITION BY InventoryDate)
+From vInventories
 JOIN vProducts
-ON vInventories.ProductID = vProducts.ProductID
+ON vProducts.ProductID = vInventories.InventoryID
 JOIN vCategories
-ON vCategories.CategoryID = vProducts.ProductID
+ON vProducts.CategoryID = vCategories.CategoryID
 --GROUP BY CategoryName
-ORDER BY CategoryName ASC, InventoryDate ASC;
 go
 -- Check that it works: Select * From vCategoryInventories;
 Select * From vCategoryInventories
@@ -293,9 +292,22 @@ go
 -- This new view must use your vProductInventories view.
 
 -- <Put Your Code Here> --
+CREATE
+VIEW
+vProductInventoriesWithPreviousMonthCounts
+AS
+SELECT TOP 1000000
+	p.ProductName,
+	i.InventoryDate,
+	i.Count,
+	[PreviousMonthCount] = lag(i.Count,1,0) OVER (PARTITION BY ProductName ORDER BY InventoryDate)
+FROM vProducts AS p
+JOIN vInventories AS i
+ON p.ProductID = i.ProductID
 go
 
 -- Check that it works: Select * From vProductInventoriesWithPreviousMonthCounts;
+Select * From vProductInventoriesWithPreviousMonthCounts
 go
 
 -- Question 7 (15% of pts): 
@@ -306,9 +318,15 @@ go
 -- Varify that the results are ordered by the Product and Date.
 
 -- <Put Your Code Here> --
+CREATE 
+VIEW
+vProductInventoriesWithPreviousMonthCountsWithKPIs
+AS
+SELECT
 
 -- Important: This new view must use your vProductInventoriesWithPreviousMonthCounts view!
 -- Check that it works: Select * From vProductInventoriesWithPreviousMonthCountsWithKPIs;
+Select * From vProductInventoriesWithPreviousMonthCountsWithKPIs
 go
 
 -- Question 8 (25% of pts): 
