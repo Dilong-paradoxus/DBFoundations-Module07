@@ -265,20 +265,21 @@ go
 -- Order the results by the Product and Date.
 
 -- <Put Your Code Here> --
-CREATE
-VIEW
-vCategoryInventories
+
+--really struggling with the totals here, ran out of time ):
+CREATE VIEW vCategoryInventories
 AS 
 SELECT TOP 1000000
-	CategoryName
-	,DateName(mm,InventoryDate) + ', ' + DateName(YEAR,InventoryDate) AS DateMonth
-	,[InventoryCount] = SUM(Count) OVER(PARTITION BY InventoryDate)
+	vCategories.CategoryName
+	,DateName(mm,vInventories.InventoryDate) + ', ' + DateName(YEAR,vInventories.InventoryDate) AS DateMonth
+	,[InventoryCount] = SUM(vInventories.[Count])
 From vInventories
 JOIN vProducts
 ON vProducts.ProductID = vInventories.InventoryID
 JOIN vCategories
 ON vProducts.CategoryID = vCategories.CategoryID
---GROUP BY CategoryName
+GROUP BY vCategories.CategoryName, vInventories.InventoryDate
+ORDER By vproducts.ProductID, vInventories.InventoryDate
 go
 -- Check that it works: Select * From vCategoryInventories;
 Select * From vCategoryInventories
@@ -350,21 +351,21 @@ go
 
 -- <Put Your Code Here> --
 CREATE Function dbo.fProductInventoriesWithPreviousMonthCountsWithKPIs (@KPI INT)
-RETURNS TABLE
-AS
-RETURN
-(
-SELECT TOP 1000000
-	ProductName
-	,InventoryDate
-	,Count
-	,PreviousMonthCount
-	,CountVsPreviousCountKPI
-FROM
-vProductInventoriesWithPreviousMonthCountsWithKPIs
-WHERE CountVsPreviousCountKPI = @KPI
-ORDER BY ProductName ASC, InventoryDate ASC
-);
+ RETURNS TABLE
+ AS
+ RETURN
+ (
+	SELECT TOP 1000000
+		ProductName
+		,InventoryDate
+		,Count
+		,PreviousMonthCount
+		,CountVsPreviousCountKPI
+	FROM
+	 vProductInventoriesWithPreviousMonthCountsWithKPIs
+	WHERE CountVsPreviousCountKPI = @KPI
+	 ORDER BY ProductName ASC, InventoryDate ASC
+ );
 go
 
 /* Check that it works:
