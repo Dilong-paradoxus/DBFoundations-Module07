@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[lining,light]{InriaSans}
+\renewcommand*\oldstylenums[1]{{\fontfamily{InriaSans-OsF}\selectfont #1}}
+\let\oldnormalfont\normalfont
+\def\normalfont{\oldnormalfont\mdseries}
+\usepackage[margin=1.5in,includehead,includefoot,]{geometry}
+\usepackage{hyperref}
+\usepackage[natbib=true, style=numeric,sorting=none]{biblatex}
+\addbibresource{bibliography.bib}
+
+
+\title{Assignment 07 - Functions \\
+\large{IT FDN 130A}}
+
+\author{Nicholas Thibault}
+\date{2025-06-04}
+\Large{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+In this assignment I worked with functions which can reduce repetition of common tasks.
+
+\href{https://github.com/Dilong-paradoxus/DBFoundations-Module07}{Github Link}
+\section*{When to Use a SQL User-Defined Function}
+There are many use cases for user-defined functions because there are many, many operations someone may want to repeat that aren't and realistically couldn't be included in the database engine. A simple example is applying operations to multiple columns (such as a math equation with several steps) and outputting as another column. A more complex example would be emulating the functionality of check constraints across multiple tables instead of between rows in a single table. 
+\section*{Kinds of Functions}
+Three categories of functions are Scalar, Inline, and Multi-Statement functions. Scalar functions return a single result value.\cite{SQLscalarG4g} Inline and multi-statement functions return that result in the form of a table which can be used like any other table.\cite{SQLinlineg4g} Multi-statement functions can perform more complex operations, while inline functions must be composed of a single select statement.\cite{SQLmultistatementg4g}
+\section*{Summary}
+In summary, there are several types of functions which have varying levels of complexity for their various use-cases.
+\printbibliography
+\end{document}
